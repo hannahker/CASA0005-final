@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1578575860412.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "49280536",
+    "lastKnownWriteTime" : 1578580804,
+    "last_content_update" : 1578580804095,
+    "path" : "C:/Users/hanna/Desktop/Fall2019/gis/assessment/analysis/markdown/methodology/04-mapping.Rmd",
+    "project_path" : "04-mapping.Rmd",
+    "properties" : {
+        "cursorPosition" : "78,7",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

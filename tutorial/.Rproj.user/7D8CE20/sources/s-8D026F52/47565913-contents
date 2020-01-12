@@ -1,0 +1,23 @@
+--- 
+title: "Methodology"
+author: "Hannah Ker"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+description: "This book provides a detailed review of the methodology used to understand personal variations in anxiety levels while inhabiting space in London from Dec 4-Dec 14, 2019."
+---
+
+# Introduction and Description of Data  
+
+This document offers a detailed walkthough of a procedure for processing, analyzing and visualizing data to examine changes in my levels of anxiety while I moved through space in London. 
+
+This walkthrough requires the following two types of data, collected between Dec 4-Dec 14, 2019: 
+
+1. Heart rate measurements, collected with a Fitbit Charge 2 device at intervals of approx 1-5 seconds. Also contains timestamp and coordinates for each measurement. There are a total of 15 .TCX files that contain data for different walking routes through the city. 
+
+2. Personal comments, collected using a voice recorder and transcribed and stored in a .CSV file. 
+
+This data is stored in an online repository: <INCLUDE LINK>

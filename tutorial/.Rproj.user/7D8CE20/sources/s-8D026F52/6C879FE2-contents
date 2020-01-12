@@ -1,0 +1,24 @@
+# Coding of Personal Comments 
+
+We must now manually code the personal comments data according to their theme and direction of impact on anxiety levels. 
+
+## Coding according to theme
+
+1. Read through all comments and record, in one word, the primary theme that emerges from each comment. 
+2. Group together similar themes. 
+3. For each group of themes, identify the higher-level theme (again, in one word). 
+
+## Coding according to direction of impact on anxiety 
+
+1. Read through all comments and classify the overall sentiment as positive or negative. 
+
+Following this process, the personal comments data will look something like this: 
+
+```{r, echo=FALSE}
+data <- read.csv('data/voice_notes.csv')
+
+print(head(data))
+```
+
+
+

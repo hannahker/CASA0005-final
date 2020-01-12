@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Section 2 Data Cleaning and Processing | Methodology</title>
+  <meta name="description" content="This book provides a detailed review of the methodology used to understand personal variations in anxiety levels while inhabiting space in London from Dec 4-Dec 14, 2019." />
+  <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Section 2 Data Cleaning and Processing | Methodology" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This book provides a detailed review of the methodology used to understand personal variations in anxiety levels while inhabiting space in London from Dec 4-Dec 14, 2019." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Section 2 Data Cleaning and Processing | Methodology" />
+  
+  <meta name="twitter:description" content="This book provides a detailed review of the methodology used to understand personal variations in anxiety levels while inhabiting space in London from Dec 4-Dec 14, 2019." />
+  
+
+<meta name="author" content="Hannah Ker" />
+
+
+<meta name="date" content="2020-01-12" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="coding-of-personal-comments.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction and Description of Data</a></li>
+<li class="chapter" data-level="2" data-path="data-cleaning-and-processing.html"><a href="data-cleaning-and-processing.html"><i class="fa fa-check"></i><b>2</b> Data Cleaning and Processing</a><ul>
+<li class="chapter" data-level="2.1" data-path="data-cleaning-and-processing.html"><a href="data-cleaning-and-processing.html#heart-rate-data"><i class="fa fa-check"></i><b>2.1</b> Heart Rate Data</a></li>
+<li class="chapter" data-level="2.2" data-path="data-cleaning-and-processing.html"><a href="data-cleaning-and-processing.html#creating-a-continuous-heart-rate-layer"><i class="fa fa-check"></i><b>2.2</b> Creating a continuous heart rate layer</a></li>
+<li class="chapter" data-level="2.3" data-path="data-cleaning-and-processing.html"><a href="data-cleaning-and-processing.html#personal-comments"><i class="fa fa-check"></i><b>2.3</b> Personal Comments</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="coding-of-personal-comments.html"><a href="coding-of-personal-comments.html"><i class="fa fa-check"></i><b>3</b> Coding of Personal Comments</a><ul>
+<li class="chapter" data-level="3.1" data-path="coding-of-personal-comments.html"><a href="coding-of-personal-comments.html#coding-according-to-theme"><i class="fa fa-check"></i><b>3.1</b> Coding according to theme</a></li>
+<li class="chapter" data-level="3.2" data-path="coding-of-personal-comments.html"><a href="coding-of-personal-comments.html#coding-according-to-direction-of-impact-on-anxiety"><i class="fa fa-check"></i><b>3.2</b> Coding according to direction of impact on anxiety</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="summarizing-the-data.html"><a href="summarizing-the-data.html"><i class="fa fa-check"></i><b>4</b> Summarizing the Data</a><ul>
+<li class="chapter" data-level="4.1" data-path="summarizing-the-data.html"><a href="summarizing-the-data.html#heart-rate-data-1"><i class="fa fa-check"></i><b>4.1</b> Heart Rate Data</a></li>
+<li class="chapter" data-level="4.2" data-path="summarizing-the-data.html"><a href="summarizing-the-data.html#personal-comments-1"><i class="fa fa-check"></i><b>4.2</b> Personal Comments</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="interactive-visualization.html"><a href="interactive-visualization.html"><i class="fa fa-check"></i><b>5</b> Interactive Visualization</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Methodology</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="data-cleaning-and-processing" class="section level1">
+<h1><span class="header-section-number">Section 2</span> Data Cleaning and Processing</h1>
+<p>This page covers Section II of the methodology covered in my report.</p>
+<p>First, load all of the libraries required for this code:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(XML)</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw">library</span>(moveVis)</a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="kw">library</span>(move)</a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw">library</span>(data.table)</a></code></pre></div>
+<div id="heart-rate-data" class="section level2">
+<h2><span class="header-section-number">2.1</span> Heart Rate Data</h2>
+<p>To read in all of the .TCX files, first create a list of all filenames in the ‘data’ directory with the appropriate extension.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="co"># get all files in the dataset from the &#39;data&#39; folder in our working directory </span></a>
+<a class="sourceLine" id="cb2-2" title="2">filenames &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="st">&quot;data/&quot;</span>, <span class="st">&quot;*.tcx&quot;</span>, <span class="dt">full.names=</span><span class="ot">TRUE</span>)</a></code></pre></div>
+<p>This function will then perform the necessary processing for each .TCX file. We will read in each .TCX file in XML format, then convert it to a dataframe in R. We will make sure that each column is the appropriate data type and then convert the dataframe to a MoveStack object.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="co"># input filename and outputs a movestack object </span></a>
+<a class="sourceLine" id="cb3-2" title="2">process &lt;-<span class="st"> </span><span class="cf">function</span>(data){</a>
+<a class="sourceLine" id="cb3-3" title="3">  </a>
+<a class="sourceLine" id="cb3-4" title="4">  <span class="co"># read in the tcx data as xml</span></a>
+<a class="sourceLine" id="cb3-5" title="5">  doc &lt;-<span class="st"> </span><span class="kw">xmlParse</span>(data)</a>
+<a class="sourceLine" id="cb3-6" title="6">  </a>
+<a class="sourceLine" id="cb3-7" title="7">  <span class="co"># convert xml format to dataframe </span></a>
+<a class="sourceLine" id="cb3-8" title="8">  df &lt;-<span class="st"> </span><span class="kw">xmlToDataFrame</span>(<span class="dt">nodes =</span> <span class="kw">getNodeSet</span>(doc, <span class="st">&quot;//ns:Trackpoint&quot;</span>, <span class="st">&quot;ns&quot;</span>))</a>
+<a class="sourceLine" id="cb3-9" title="9">  </a>
+<a class="sourceLine" id="cb3-10" title="10">  <span class="co"># convert from factors to characters</span></a>
+<a class="sourceLine" id="cb3-11" title="11">  i &lt;-<span class="st"> </span><span class="kw">sapply</span>(df, is.factor) <span class="co"># find columns that are factors </span></a>
+<a class="sourceLine" id="cb3-12" title="12">  df[i] &lt;-<span class="st"> </span><span class="kw">lapply</span>(df[i], as.character) <span class="co"># convert column to character</span></a>
+<a class="sourceLine" id="cb3-13" title="13">  </a>
+<a class="sourceLine" id="cb3-14" title="14">  <span class="co"># convert heart rate from char to number </span></a>
+<a class="sourceLine" id="cb3-15" title="15">  df<span class="op">$</span>HeartRateBpm &lt;-<span class="st"> </span><span class="kw">sapply</span>(df<span class="op">$</span>HeartRateBpm, as.numeric)</a>
+<a class="sourceLine" id="cb3-16" title="16">  </a>
+<a class="sourceLine" id="cb3-17" title="17">  <span class="co"># separate the X and Y columns </span></a>
+<a class="sourceLine" id="cb3-18" title="18">  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(df<span class="op">$</span>Position)){</a>
+<a class="sourceLine" id="cb3-19" title="19">    a &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">strsplit</span>(df<span class="op">$</span>Position[i], <span class="st">&#39;-&#39;</span>))</a>
+<a class="sourceLine" id="cb3-20" title="20">    df<span class="op">$</span>Y_coord[i] &lt;-<span class="st"> </span>(a[<span class="dv">1</span>])</a>
+<a class="sourceLine" id="cb3-21" title="21">    df<span class="op">$</span>X_coord[i] &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&#39;-&#39;</span>,a[<span class="dv">2</span>])</a>
+<a class="sourceLine" id="cb3-22" title="22">  }</a>
+<a class="sourceLine" id="cb3-23" title="23">  </a>
+<a class="sourceLine" id="cb3-24" title="24">  <span class="co"># convert to numeric values </span></a>
+<a class="sourceLine" id="cb3-25" title="25">  df<span class="op">$</span>Y_coord &lt;-<span class="st"> </span><span class="kw">sapply</span>(df<span class="op">$</span>Y_coord, as.numeric)</a>
+<a class="sourceLine" id="cb3-26" title="26">  df<span class="op">$</span>X_coord &lt;-<span class="st"> </span><span class="kw">sapply</span>(df<span class="op">$</span>X_coord, as.numeric)</a>
+<a class="sourceLine" id="cb3-27" title="27">  </a>
+<a class="sourceLine" id="cb3-28" title="28">  <span class="co"># convert time format </span></a>
+<a class="sourceLine" id="cb3-29" title="29">  df<span class="op">$</span>TimeConverted &lt;-<span class="st"> </span><span class="kw">as.POSIXct</span>(df<span class="op">$</span>Time, <span class="dt">tz=</span><span class="st">&quot;UTC&quot;</span>, <span class="dt">format=</span><span class="st">&quot;%Y-%m-%dT%H:%M:%S&quot;</span>)</a>
+<a class="sourceLine" id="cb3-30" title="30">  </a>
+<a class="sourceLine" id="cb3-31" title="31">  <span class="co"># remove duplicate timestamps </span></a>
+<a class="sourceLine" id="cb3-32" title="32">  new &lt;-<span class="st"> </span>df[<span class="op">!</span><span class="kw">duplicated</span>(df<span class="op">$</span>TimeConverted), ]</a>
+<a class="sourceLine" id="cb3-33" title="33">  </a>
+<a class="sourceLine" id="cb3-34" title="34">  <span class="co"># convert df to movement type </span></a>
+<a class="sourceLine" id="cb3-35" title="35">  movement_format &lt;-<span class="st"> </span><span class="kw">df2move</span>(new, </a>
+<a class="sourceLine" id="cb3-36" title="36">                             <span class="dt">proj =</span> <span class="st">&#39;+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0&#39;</span>, </a>
+<a class="sourceLine" id="cb3-37" title="37">                             <span class="dt">x =</span> <span class="st">&#39;X_coord&#39;</span>, </a>
+<a class="sourceLine" id="cb3-38" title="38">                             <span class="dt">y =</span> <span class="st">&#39;Y_coord&#39;</span>, </a>
+<a class="sourceLine" id="cb3-39" title="39">                             <span class="dt">time =</span> <span class="st">&#39;TimeConverted&#39;</span>, </a>
+<a class="sourceLine" id="cb3-40" title="40">                             <span class="dt">data =</span> new) </a>
+<a class="sourceLine" id="cb3-41" title="41">  </a>
+<a class="sourceLine" id="cb3-42" title="42">  <span class="co"># return the move stack object </span></a>
+<a class="sourceLine" id="cb3-43" title="43">  <span class="kw">return</span>(movement_format)</a>
+<a class="sourceLine" id="cb3-44" title="44">  </a>
+<a class="sourceLine" id="cb3-45" title="45">}</a></code></pre></div>
+<p>We will apply this function to all of our data files. Then we will add all of the data together to create a single object.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="co"># process all of the data with the above function</span></a>
+<a class="sourceLine" id="cb4-2" title="2">list &lt;-<span class="st"> </span><span class="kw">lapply</span>(filenames, process)</a>
+<a class="sourceLine" id="cb4-3" title="3"></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="co"># combine all of the data into one </span></a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="co"># </span><span class="al">NOTE</span><span class="co">: brute force method - needs to be adapted if different number of files </span></a>
+<a class="sourceLine" id="cb4-6" title="6">test3 &lt;-<span class="st"> </span>list[[<span class="dv">1</span>]] <span class="op">+</span><span class="st"> </span>list[[<span class="dv">2</span>]] <span class="op">+</span><span class="st"> </span>list[[<span class="dv">3</span>]] <span class="op">+</span><span class="st"> </span>list[[<span class="dv">4</span>]] <span class="op">+</span><span class="st"> </span>list[[<span class="dv">5</span>]] <span class="op">+</span><span class="st"> </span>list[[<span class="dv">6</span>]] <span class="op">+</span><span class="st"> </span>list[[<span class="dv">7</span>]] <span class="op">+</span><span class="st"> </span>list[[<span class="dv">8</span>]] <span class="op">+</span><span class="st"> </span>list[[<span class="dv">9</span>]] <span class="op">+</span><span class="st"> </span>list[[<span class="dv">10</span>]] <span class="op">+</span><span class="st"> </span>list[[<span class="dv">11</span>]]<span class="op">+</span><span class="st"> </span>list[[<span class="dv">12</span>]]<span class="op">+</span>list[[<span class="dv">13</span>]]<span class="op">+</span>list[[<span class="dv">14</span>]]<span class="op">+</span>list[[<span class="dv">15</span>]]</a></code></pre></div>
+<p>Next select the columns of interest from our data and write them to a .CSV file for us to take a look at manually.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="co"># select columns  </span></a>
+<a class="sourceLine" id="cb5-2" title="2">points_out &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(test3<span class="op">$</span>TimeConverted)</a>
+<a class="sourceLine" id="cb5-3" title="3">points_out[<span class="st">&#39;X_coord&#39;</span>] &lt;-<span class="st"> </span>test3<span class="op">$</span>X_coord</a>
+<a class="sourceLine" id="cb5-4" title="4">points_out[<span class="st">&#39;Y_coord&#39;</span>] &lt;-<span class="st"> </span>test3<span class="op">$</span>Y_coord</a>
+<a class="sourceLine" id="cb5-5" title="5">points_out[<span class="st">&#39;hr&#39;</span>]&lt;-<span class="st"> </span>test3<span class="op">$</span>HeartRateBpm</a>
+<a class="sourceLine" id="cb5-6" title="6">points_out[<span class="st">&#39;time&#39;</span>]&lt;-<span class="st"> </span>test3<span class="op">$</span>TimeConverted</a>
+<a class="sourceLine" id="cb5-7" title="7"></a>
+<a class="sourceLine" id="cb5-8" title="8"><span class="co"># write to CSV </span></a>
+<a class="sourceLine" id="cb5-9" title="9"><span class="kw">write.csv</span>(points_out, <span class="st">&#39;data/all_hr.csv&#39;</span>)</a></code></pre></div>
+<p>Here is a subset of what the data now looks like:</p>
+<pre><code>##   test3$TimeConverted    X_coord  Y_coord  hr                time
+## 1 2019-12-05 23:11:59 -0.1273531 51.50747 130 2019-12-05 23:11:59
+## 2 2019-12-05 23:12:02 -0.1273531 51.50747 129 2019-12-05 23:12:02
+## 3 2019-12-05 23:12:03 -0.1273531 51.50747 129 2019-12-05 23:12:03
+## 4 2019-12-05 23:12:04 -0.1273501 51.50747 129 2019-12-05 23:12:04
+## 5 2019-12-05 23:12:05 -0.1273423 51.50747 127 2019-12-05 23:12:05
+## 6 2019-12-05 23:12:06 -0.1273263 51.50747 127 2019-12-05 23:12:06</code></pre>
+</div>
+<div id="creating-a-continuous-heart-rate-layer" class="section level2">
+<h2><span class="header-section-number">2.2</span> Creating a continuous heart rate layer</h2>
+<p>We will now process the cleaned heart rate points to create a continuous layer of anxiety levels. This processing is done using QGIS, and so a model with predefined steps and parameters has been provided: ADD LINK</p>
+<p>The input for this model is a vector layer with points corresponding to each heart rate measurement. The QGIS <a href="https://docs.qgis.org/2.8/en/docs/user_manual/processing_algs/qgis/vector_creation_tools/pointslayerfromtable.html">‘Points Layer from Table’</a> function can be used to read in the .CSV file generated in the previous step and create this vector layer.</p>
+<p>The QGIS processing model performs the following functions:</p>
+<ol style="list-style-type: decimal">
+<li>Interpolates the points to create a continuous surface of heart rate values</li>
+<li>Creates a buffer around all point locations.</li>
+<li>Clips the interpolated layer by the buffer to enclose the region of heart rate measurement.</li>
+<li>Smooths the interpolated layer.</li>
+</ol>
+<p>The model outputs a raster layer of continuous heart rate values.</p>
+</div>
+<div id="personal-comments" class="section level2">
+<h2><span class="header-section-number">2.3</span> Personal Comments</h2>
+<p>We now need to read in the personal comments CSV file, stored in the same folder as our heart rate data.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="co"># read in csv </span></a>
+<a class="sourceLine" id="cb7-2" title="2">notes &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&#39;data/voice_notes_raw.csv&#39;</span>)</a></code></pre></div>
+<p>Here is what this data looks like:</p>
+<pre><code>##                                                                 ï..Note
+## 1                                          Wow, very crowded sidewalk. 
+## 2                         Got stuck in the middle of the intersection. 
+## 3          Tried to cross the street but I didn&#39;t see that car coming. 
+## 4 I think this is the area where people have reported getting harassed.
+## 5 I always get stuck in the middle of the intersection on this street. 
+## 6                         There are some bikes moving very quickly here
+##          Date_time
+## 1 2019-12-11 17:22
+## 2 2019-12-11 17:23
+## 3 2019-12-11 17:32
+## 4 2019-12-11 17:33
+## 5 2019-12-13 13:52
+## 6 2019-12-04 13:58</code></pre>
+<p>Our next task is to attach coordinates to each note, by joining through time with the heart rate data, as processed previously.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="co"># convert time format to POSIXct </span></a>
+<a class="sourceLine" id="cb9-2" title="2">notes<span class="op">$</span>TimeConverted &lt;-<span class="st"> </span><span class="kw">as.POSIXct</span>(notes<span class="op">$</span>Date_time, <span class="dt">tz=</span><span class="st">&#39;UTC&#39;</span>)</a>
+<a class="sourceLine" id="cb9-3" title="3"></a>
+<a class="sourceLine" id="cb9-4" title="4"><span class="co"># need to add coordinates by joining with heart rate data </span></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="co"># help from: https://stackoverflow.com/questions/39282749/r-how-to-join-two-data-frames-by-nearest-time-date</span></a>
+<a class="sourceLine" id="cb9-6" title="6"></a>
+<a class="sourceLine" id="cb9-7" title="7"><span class="co"># convert to data tables </span></a>
+<a class="sourceLine" id="cb9-8" title="8">table_coords &lt;-<span class="st"> </span><span class="kw">as.data.table</span>(points_out)</a>
+<a class="sourceLine" id="cb9-9" title="9">table_notes &lt;-<span class="st"> </span><span class="kw">as.data.table</span>(notes)</a>
+<a class="sourceLine" id="cb9-10" title="10"></a>
+<a class="sourceLine" id="cb9-11" title="11"><span class="co"># set join key </span></a>
+<a class="sourceLine" id="cb9-12" title="12"><span class="kw">setkey</span>(table_coords, time)</a>
+<a class="sourceLine" id="cb9-13" title="13"><span class="kw">setkey</span>(table_notes, TimeConverted)</a>
+<a class="sourceLine" id="cb9-14" title="14"></a>
+<a class="sourceLine" id="cb9-15" title="15"><span class="co"># combine with nearest time stamp</span></a>
+<a class="sourceLine" id="cb9-16" title="16">combined &lt;-<span class="st"> </span>table_coords[table_notes, roll =<span class="st"> &quot;nearest&quot;</span> ]</a>
+<a class="sourceLine" id="cb9-17" title="17"></a>
+<a class="sourceLine" id="cb9-18" title="18"><span class="co"># output as a CSV to take a look at </span></a>
+<a class="sourceLine" id="cb9-19" title="19"><span class="kw">write.csv</span>(combined, <span class="st">&#39;data/comments_w_coords.csv&#39;</span>)</a></code></pre></div>
+<p>Now we have our coordinates:</p>
+<pre><code>##    test3$TimeConverted    X_coord  Y_coord  hr                time
+## 1: 2019-12-04 13:58:00 -0.1263700 51.52482 130 2019-12-04 13:58:00
+## 2: 2019-12-04 13:59:00 -0.1274354 51.52488 129 2019-12-04 13:59:00
+## 3: 2019-12-04 14:04:53 -0.1323954 51.52330 124 2019-12-04 19:11:00
+## 4: 2019-12-04 14:04:53 -0.1323954 51.52330 124 2019-12-04 19:15:00
+## 5: 2019-12-05 11:31:00 -0.1249467 51.52490 140 2019-12-05 11:31:00
+## 6: 2019-12-05 18:52:00 -0.1184381 51.52405 109 2019-12-05 18:52:00
+##                                                                              ï..Note
+## 1:                                     There are some bikes moving very quickly here
+## 2:                                                     This park looks very peaceful
+## 3: Still haven&#39;t gotten the hang of looking a different way when crossing the street
+## 4:                                             It&#39;s nice not to see any cars in here
+## 5:                              Almost didn&#39;t see that car coming around the corner 
+## 6:                         The pedestrian scale of this street is really comfortable
+##           Date_time
+## 1: 2019-12-04 13:58
+## 2: 2019-12-04 13:59
+## 3: 2019-12-04 19:11
+## 4: 2019-12-04 19:15
+## 5: 2019-12-05 11:31
+## 6: 2019-12-05 18:52</code></pre>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="coding-of-personal-comments.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Methodology.pdf", "Methodology.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

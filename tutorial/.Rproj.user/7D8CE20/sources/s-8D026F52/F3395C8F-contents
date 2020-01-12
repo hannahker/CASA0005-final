@@ -1,0 +1,158 @@
+# PAM CLUSTERING 
+
+# methods adapted from: http://dpmartin42.github.io/posts/r/cluster-mixed-types
+
+library(dplyr) # for data cleaning
+library(cluster) # for gower similarity and pam
+library(Rtsne) # for t-SNE plot
+library(ggplot2) # for visualization
+library(fpc)
+library(factoextra)
+
+theme_set(theme_minimal())
+
+setwd('C:/Users/hanna/Desktop/Fall2019/quantitative_methods/assessment/Final/data')
+
+# data <- read.csv('cleaned_all.csv')
+data<- read.csv('data_transformed.csv')
+# -----------------------------------
+# CALCULATE DISTANCE MATRIX 
+# -----------------------------------
+
+# remove variable
+# remove neighbourhood, host listings, bed type 
+
+# select columns of interest 
+data <- select(data,-c(6,8))
+
+# calculate the distance matrix 
+# takes a couple of seconds
+gower_dist <- daisy(data[, -1],
+                    metric = "gower")
+
+# checking... take a look
+summary(gower_dist)
+
+# convert to matrix
+gower_mat <- as.matrix(gower_dist)
+
+# checking... Output most similar pair
+data[
+  which(gower_mat == min(gower_mat[gower_mat != min(gower_mat)]),
+        arr.ind = TRUE)[1, ], ]
+
+# checking... Output most dissimilar pair
+data[
+  which(gower_mat == max(gower_mat[gower_mat != max(gower_mat)]),
+        arr.ind = TRUE)[1, ], ]
+
+# -----------------------------------
+# DETERMINE NUMBER OF CLUSTERS 
+# -----------------------------------
+# this takes a while...
+
+# Calculate silhouette width for many k using PAM
+
+sil_width <- c(NA)
+
+for(i in 2:15){
+  
+  pam_fit <- pam(gower_dist,
+                 diss = TRUE,
+                 k = i)
+  
+  sil_width[i] <- pam_fit$silinfo$avg.width
+  
+}
+
+# convert to dataframe - for use with ggplot
+sil_width <- sil_width[2:15]
+sil <- as.data.frame(sil_width)
+sil['nclust'] <- 2:15
+
+# Plot sihouette width (higher is better)
+plot <- ggplot(data=sil)+
+  geom_line(aes(x=sil$nclust, y=sil$sil_width))+
+  xlab('Number of clusters')+
+  ylab('Silhouette width')
+plot
+
+# -----------------------------------
+# CREATE CLUSTERS 
+# -----------------------------------
+
+pam_fit <- pam(gower_dist,
+               diss = TRUE,
+               k = 11)
+
+# add clusters to the dataframe 
+data['cluster'] <- pam_fit$clustering
+
+# -----------------------------------
+# LOOK AT THE RESULTS
+# -----------------------------------
+
+pam_results <- data %>%
+  dplyr::select(-listing_url) %>%
+  mutate(cluster = pam_fit$clustering) %>%
+  group_by(cluster) %>%
+  do(the_summary = summary(.))
+
+pam_results$the_summary
+
+# look at the metoids for each cluster
+data[pam_fit$medoids, ]
+
+tsne_obj <- Rtsne(gower_dist, is_distance = TRUE)
+
+# visualize clusters with t-sne 
+tsne_data <- tsne_obj$Y %>%
+  data.frame() %>%
+  setNames(c("X", "Y")) %>%
+  mutate(cluster = factor(pam_fit$clustering),
+         name = data$neighbourhood)
+
+cluster <- ggplot(aes(x = X, y = Y), data = tsne_data) +
+  geom_point(aes(color = cluster))
+
+cluster
+
+# undo the log transformation
+data['price'] <- exp(data$price)
+data['accommodates'] <- exp(data$accommodates)
+plot(x)
+# -----------------------------------
+# CLUSTER STATS/VIZ  
+# -----------------------------------
+
+stats <- cluster.stats(gower_dist, pam_fit$clustering)
+
+class(pam_fit$silinfo)
+
+fviz_cluster(pam_fit, geom = "point", ellipse.type = "norm")
+
+pam_fit$silinfo$widths
+
+
+
+
+# -----------------------------------
+# WRITE OUTPUTS 
+# -----------------------------------
+
+writeout <- function(foldername){
+  
+  # create new directory
+  dir.create(foldername)
+
+  # output results 
+  write.csv(data[pam_fit$medoids, ], paste0(foldername,'/meteoids.csv'))
+  write.csv(pam_results$the_summary, paste0(foldername,'/summary.csv'))
+  write.csv(data, paste0(foldername, '/results.csv'))
+  ggsave(paste0(foldername,'/clusters.png'), cluster, height = 3.34, width = 6.15, units = 'in')
+}
+
+# cx-noy-log-z
+writeout('final')
+
+

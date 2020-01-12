@@ -1,0 +1,96 @@
+# Summarizing the Data 
+
+Here we will make some visualizations to summarize the basic characteristics of our data. 
+
+We will need the following libraries: 
+
+```{r, message=FALSE}
+library(ggplot2)
+library(extrafont)
+```
+
+To customize the font of our plots, we will need the following lines of code: 
+
+```{r, message=FALSE}
+# to change the font of the plots 
+font_import()
+loadfonts(device = "win")
+```
+
+## Heart Rate Data 
+
+Let's begin by taking a look at our heart rate data. 
+
+```{r}
+
+# now read in the cleaned CSV file 
+points_out <- read.csv('data/all_hr.csv')
+
+```
+
+How many data points do we have? 
+
+```{r, echo=FALSE}
+print(nrow(points_out))
+```
+
+We will first visualize the distribution of all heart rate values. 
+```{r, message=FALSE}
+# create histogram of heart rate values 
+ggplot(data = points_out)+
+  geom_histogram(aes(x=points_out$hr), color='white', fill='grey')+ # add the histogram
+  theme_minimal()+ # basic formatting
+  xlab('Heart Rate')+ # change the x axis label
+  ylab('Frequency')+ # change the y axis label
+  theme(text = element_text(family='Times New Roman')) # change the font 
+
+```
+
+What is the mean and standard deviation? 
+
+```{r, echo=FALSE}
+print(paste0('Mean: ', mean(points_out$hr)))
+print(paste0('Standard deviation: ', sd(points_out$hr)))
+
+```
+
+Now let's take a look at the spatial distribution of these points. We will create a hexbin plot that shows the count of data points within a given subset of the study area. 
+
+```{r}
+ggplot(data=points_out)+
+  geom_hex(aes(x=points_out$X_coord, y=points_out$Y_coord), bins=15)+ # add in the hexbins 
+  theme_minimal()+ # basic formatting
+  xlab('Longitude')+ # change the x axis label
+  ylab('Latitude')+ # change the y axis label
+  theme(text = element_text(family='Times New Roman')) # change the font
+```
+
+
+## Personal Comments 
+
+Now we can take a closer look at the personal comments data. 
+
+```{r}
+# read the file
+notes <- read.csv('data/voice_notes.csv')
+```
+
+How many notes are there in total? 
+
+```{r, echo=FALSE}
+print(nrow(notes))
+```
+
+Let's visualize how these comments can be broken down across themes and positive/negative codes. 
+
+```{r}
+ggplot(data = notes)+
+  geom_bar(aes(x=notes$Theme, fill=notes$Sentiment),  color='white')+ # add in the bars 
+  coord_flip()+ # switch orientation of the axes to easier reading of the labels 
+  theme_minimal()+ # basic formatting 
+  xlab('Theme')+ # change the x axis label
+  ylab('Frequency')+ # change the y axis label
+  guides(fill=guide_legend(title='Impact on anxiety'))+ # change legend title 
+  theme(text = element_text(family='Times New Roman')) # change the font 
+```
+

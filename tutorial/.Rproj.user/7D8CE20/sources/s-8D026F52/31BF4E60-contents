@@ -1,0 +1,158 @@
+# Data Cleaning and Processing
+
+This covers Section II of the methodology covered in my report. 
+
+First, let's load all of the libraries required for this code: 
+
+```{r libs, message=FALSE, warning=FALSE}
+library(XML)
+library(moveVis)
+library(move)
+library(data.table)
+```
+
+## Heart Rate Data 
+
+Now let's read in and process the heart rate data, stored as a collection of .TCX files 
+
+```{r read}
+
+# get all files in the dataset from the 'data' folder in our working directory 
+filenames <- list.files("data/", "*.tcx", full.names=TRUE)
+
+```
+
+This function will perform the necessary processing for each .TCX file. We will read in each .TCX file in XML format, then convert it to a dataframe in R. We will make sure that each column is the appropriate data type and then convert the dataframe to a MoveStack object. 
+
+```{r}
+
+# input filename and outputs a movestack object 
+process <- function(data){
+  
+  # read in the tcx data as xml
+  doc <- xmlParse(data)
+  
+  # convert xml format to dataframe 
+  df <- xmlToDataFrame(nodes = getNodeSet(doc, "//ns:Trackpoint", "ns"))
+  
+  # convert from factors to characters
+  i <- sapply(df, is.factor) # find columns that are factors 
+  df[i] <- lapply(df[i], as.character) # convert column to character
+  
+  # convert heart rate from char to number 
+  df$HeartRateBpm <- sapply(df$HeartRateBpm, as.numeric)
+  
+  # separate the X and Y columns 
+  for (i in 1:length(df$Position)){
+    a <- unlist(strsplit(df$Position[i], '-'))
+    df$Y_coord[i] <- (a[1])
+    df$X_coord[i] <- paste0('-',a[2])
+  }
+  
+  # convert to numeric values 
+  df$Y_coord <- sapply(df$Y_coord, as.numeric)
+  df$X_coord <- sapply(df$X_coord, as.numeric)
+  
+  # convert time format 
+  df$TimeConverted <- as.POSIXct(df$Time, tz="UTC", format="%Y-%m-%dT%H:%M:%S")
+  
+  # remove duplicate timestamps 
+  new <- df[!duplicated(df$TimeConverted), ]
+  
+  # convert df to movement type 
+  movement_format <- df2move(new, 
+                             proj = '+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0', 
+                             x = 'X_coord', 
+                             y = 'Y_coord', 
+                             time = 'TimeConverted', 
+                             data = new) 
+  
+  # return the move stack object 
+  return(movement_format)
+  
+}
+
+```
+
+We will apply this function to all of our data files. Then we will add all of the data together to create a single object. 
+
+```{r apply, warning=FALSE}
+
+# process all of the data with the above function
+list <- lapply(filenames, process)
+
+# combine all of the data into one 
+# NOTE: brute force method - needs to be adapted if different number of files 
+test3 <- list[[1]] + list[[2]] + list[[3]] + list[[4]] + list[[5]] + list[[6]] + list[[7]] + list[[8]] + list[[9]] + list[[10]] + list[[11]]+ list[[12]]+list[[13]]+list[[14]]+list[[15]]
+
+```
+
+Next we will select the columns of interest from our data and write them to a CSV file for us to take a look at. 
+
+```{r}
+
+# write to csv 
+points_out <- as.data.frame(test3$TimeConverted)
+points_out['X_coord'] <- test3$X_coord
+points_out['Y_coord'] <- test3$Y_coord
+points_out['hr']<- test3$HeartRateBpm
+points_out['time']<- test3$TimeConverted
+
+write.csv(points_out, 'data/all_hr.csv')
+
+```
+
+Here is a subset of what the data now looks like: 
+
+```{r, echo=FALSE}
+
+print(head(points_out))
+
+```
+
+## Personal Comments 
+
+We now need to read in the personal comments CSV file, stored in the same folder as our heart rate data. 
+
+```{r}
+# read in csv 
+notes <- read.csv('data/voice_notes_raw.csv')
+
+```
+
+Here is what this data looks like: 
+ 
+```{r, echo=FALSE}
+print(head(notes))
+```
+
+Our next task is to attach coordinates to each note, by joining through time with the heart rate data, as processed previously. 
+
+```{r}
+# convert time format to POSIXct 
+notes$TimeConverted <- as.POSIXct(notes$Date_time, tz='UTC')
+
+# need to add coordinates by joining with heart rate data 
+# help from: https://stackoverflow.com/questions/39282749/r-how-to-join-two-data-frames-by-nearest-time-date
+
+# convert to data tables 
+table_coords <- as.data.table(points_out)
+table_notes <- as.data.table(notes)
+
+# set join key 
+setkey(table_coords, time)
+setkey(table_notes, TimeConverted)
+
+# combine with nearest time stamp
+combined <- table_coords[table_notes, roll = "nearest" ]
+
+# output as a CSV to take a look at 
+write.csv(combined, 'data/comments_w_coords.csv')
+```
+
+Now we have our coordinates: 
+
+```{r, echo=FALSE}
+print(head(combined))
+```
+

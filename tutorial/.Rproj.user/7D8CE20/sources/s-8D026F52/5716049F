@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1578576985773.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1261137059",
+    "id" : "5716049F",
+    "lastKnownWriteTime" : 1578867761,
+    "last_content_update" : 1578867762008,
+    "path" : "C:/Users/hanna/Desktop/Fall2019/gis/assessment/analysis/markdown/methodology/01-cleaning.Rmd",
+    "project_path" : "01-cleaning.Rmd",
+    "properties" : {
+        "cursorPosition" : "126,130",
+        "scrollLine" : "118"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

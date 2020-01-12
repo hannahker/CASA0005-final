@@ -1,0 +1,332 @@
+setwd('C:/Users/hanna/Desktop/Fall2019/gis/assessment/analysis')
+
+# ---------------------------------------
+# LIBRARIES
+# ---------------------------------------
+
+library(XML)
+library(moveVis)
+library(move)
+library(lubridate)
+library(dplyr)
+library(plyr)
+library(mapview)
+library(leaflet)
+library(classInt)
+library(rgl)
+library(tidyverse)
+library(htmltools)
+library(rglwidget)
+library(plotly)
+library(data.table)
+library(raster)
+
+# ---------------------------------------
+# READ IN AND PROCESS THE TCX DATA
+# ---------------------------------------
+
+# get all files in the dataset
+filenames <- list.files("data/", "*.tcx", full.names=TRUE)
+
+# input filename and outputs a movestack object 
+process <- function(data, sampling){
+  
+  # read in the tcx data 
+  doc <- xmlParse(data)
+  
+  # convert xml format to dataframe 
+  df <- xmlToDataFrame(nodes = getNodeSet(doc, "//ns:Trackpoint", "ns"))
+  
+  
+  # convert from factors to characters
+  i <- sapply(df, is.factor) # find columns that are factors 
+  df[i] <- lapply(df[i], as.character) # convert column to character
+  
+  # convert heart rate from char to number 
+  df$HeartRateBpm <- sapply(df$HeartRateBpm, as.numeric)
+  
+  # separate the X and Y columns 
+  for (i in 1:length(df$Position)){
+    a <- unlist(strsplit(df$Position[i], '-'))
+    df$Y_coord[i] <- (a[1])
+    df$X_coord[i] <- paste0('-',a[2])
+  }
+  
+  # convert to numeric values 
+  df$Y_coord <- sapply(df$Y_coord, as.numeric)
+  df$X_coord <- sapply(df$X_coord, as.numeric)
+  
+  # convert time format 
+  df$TimeConverted <- as.POSIXct(df$Time, tz="UTC", format="%Y-%m-%dT%H:%M:%S")
+  
+  # remove duplicate timestamps 
+  new <- df[!duplicated(df$TimeConverted), ]
+  
+  # convert df to movement type 
+  movement_format <- df2move(new, 
+                             proj = '+init=epsg:4326 +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0', 
+                             x = 'X_coord', 
+                             y = 'Y_coord', 
+                             time = 'TimeConverted', 
+                             data = new) 
+  
+  # align move_data to a uniform time scale
+  # change res value to adjust sampling 
+  m <- align_move(movement_format, res = sampling, digit = 0, unit = "secs")
+  
+  # return the move stack object 
+  return(movement_format)
+  
+}
+
+# process all of the data 
+# access elements with list[[i]]
+list <- lapply(filenames, process, sampling=5)
+
+# combine all of the data into one 
+test3 <- list[[1]] + list[[2]] + list[[3]] + list[[4]] + list[[5]] + list[[6]] + list[[7]] + list[[8]] + list[[9]] + list[[10]] + list[[11]]+ list[[12]]+list[[13]]+list[[14]]+list[[15]]
+
+# write to csv 
+points_out <- as.data.frame(test3$TimeConverted)
+points_out['X_coord'] <- test3$X_coord
+points_out['Y_coord'] <- test3$Y_coord
+points_out['hr']<- test3$HeartRateBpm
+
+write.csv(points_out, 'all_hr.csv')
+
+# ---------------------------------------
+# READ IN AND PROCESS THE CSV DATA
+# ---------------------------------------
+
+# read in csv 
+notes <- read.csv('data/voice_notes.csv')
+
+# convert from factor to character 
+#i <- sapply(notes, is.factor) # find columns that are factors 
+#notes[i] <- lapply(notes[i], as.character) # convert column to character
+
+# convert time format to POSIXct 
+notes$TimeConverted <- as.POSIXct(notes$Date_time, tz='UTC')
+
+# get just coords and time from the large df 
+df <- as.data.frame(test3$TimeConverted)
+df$Y_coord <- test3$Y_coord
+df$X_coord <- test3$X_coord
+df$Time_coord <- test3$TimeConverted
+df <- subset(df, select = -c(1))
+df$hr <- test3$HeartRateBpm
+
+write.csv(df, 'points.csv')
+
+# help from: https://stackoverflow.com/questions/39282749/r-how-to-join-two-data-frames-by-nearest-time-date
+
+# convert to data tables 
+table_coords <- as.data.table(df)
+table_notes <- as.data.table(notes)
+
+# set join key 
+setkey(table_coords, Time_coord)
+setkey(table_notes, TimeConverted)
+
+# combine with nearest time stamp
+combined <- table_coords[table_notes, roll = "nearest" ]
+combined 
+
+# ---------------------------------------
+# READ IN AND PROCESS THE RASTER DATA
+# ---------------------------------------
+
+# read in the raster 
+r <- raster("outputs/smoothed.tif")
+
+# colour palette for the raster 
+pal_rast <- colorNumeric(c("#FBEC3C", "#F76C52", "#4B056F"), values(r),
+                         na.color = "transparent")
+
+# colour palette for the markers 
+pal_markers <- colorFactor(c("#8E09DC", "#FBF3A9"), combined$Sentiment)
+
+leaflet() %>% 
+  # add basemap tiles
+  addProviderTiles(providers$Stamen.Toner,
+                   options = providerTileOptions(opacity = 0.9)) %>%
+  addRasterImage(r, colors = pal_rast, opacity = 0.9) %>%
+  addLegend(pal = pal_rast, values = values(r),
+            title = "Heart Rate", opacity = 1) %>%
+  addLegend(pal = pal_markers, values = combined$Sentiment,
+            title = "Note Sentiment", opacity = 1) %>%
+  addCircleMarkers(data=combined,
+                   radius=4,
+                   lng = ~combined$X_coord, 
+                   lat = ~combined$Y_coord, 
+                   stroke = TRUE, 
+                   fillOpacity = 1, 
+                   popup=paste0('<b>Sentiment: </b>', combined$Sentiment, '<br><b>Theme:</b> ', combined$Theme, '<br><b>Note:</b> <i>', combined$?..Note, '</i>'), 
+                   color = ~pal_markers(combined$Sentiment))
+
+# ---------------------------------------
+# MAKE LEAFLET MAP
+# ---------------------------------------
+
+make_leaflet <- function(to_map){
+  
+  # make breaks in the data
+  breaks<-classIntervals(to_map$HeartRateBpm, 
+                         n=5, 
+                         style="jenks")
+
+  # just keep the break values 
+  breaks <- as.numeric(breaks$brks)
+  
+  # manual_breaks <- c(110, 115, 120, 125, 130, 135, 140, 145)
+  
+  rast_pal <- colorNumeric(c("#FFFFCC", "#41B6C4", "#0C2C84"), values(r),
+                      na.color = "transparent")
+  
+  # create new  colour palette 
+  pal <- colorBin(palette = "YlOrRd", 
+                  # these are the hr values in the dataset 
+                  domain = to_map$HeartRateBpm,
+                  #create bins using the breaks object from earlier
+                  bins = breaks)
+  
+  # make the leaflet map
+  l_map <- leaflet() %>% 
+    # ----- add basemap tiles
+    addProviderTiles(providers$Stamen.TerrainBackground) %>% 
+    addProviderTiles(providers$Stamen.Toner,
+                     options = providerTileOptions(opacity = 0.35)) %>%
+    # ----- add path plus heartrate 
+    addCircleMarkers(data = to_map, 
+                    radius = ~to_map$HeartRateBpm/20, 
+                    lng = ~to_map$X_coord, 
+                    lat = ~to_map$Y_coord, 
+                    color = ~pal(HeartRateBpm), 
+                    # group = 'DEC4', 
+                    stroke = FALSE, 
+                    fillOpacity = ~to_map$HeartRateBpm/200) %>%
+    # ----- add notes
+    addCircleMarkers(data=combined,
+                     lng = ~combined$X_coord, 
+                     lat = ~combined$Y_coord, 
+                     stroke = FALSE, 
+                     fillOpacity = 0.75, 
+                     popup=combined$?..Note) %>%
+    
+    # ----- add raster
+    addRasterImage(r, colors = rast_pal, opacity = 0.9) %>%
+    #addLegend(pal = pal, values = values(r),
+    #          title = "Heart Rate") %>%
+    
+
+    # ---- add legend 
+    addLegend(data=to_map, 
+              "bottomright", 
+              pal= pal, 
+              values = ~HeartRateBpm, 
+              title = "Heart Rate", 
+              opacity = 1)
+    
+  # Layers control
+ # addLayersControl(
+#    overlayGroups = c("DEC4", "DEC5"),
+#    options = layersControlOptions(collapsed = TRUE)
+#  )
+  
+  return(l_map)
+  
+}
+
+make_leaflet(test3)
+
+
+
+
+
+
+
+
+
+
+# ---------------------------------------
+# MAKE SPACE TIME CUBE - NOT DONE!!
+# ---------------------------------------
+
+stcube <- plot3d(test$X_coord, test$Y_coord, test$TimeConverted, type="l")
+class(stcube)
+
+rglwidget(stcube)
+
+# ---------------------------------------
+# MAKE MAPVIEW MAP
+# ---------------------------------------
+
+# make interactive map
+map <- 
+  mapview(dec4, zcol = 'HeartRateBpm', legend =  FALSE)+
+  mapview(dec5, zcol = 'HeartRateBpm', legend =  FALSE)
+
+map
+
+# ---------------------------------------
+# MAKE MOVEVIZ GIF - NOT DONE!!
+# ---------------------------------------
+
+# DOESN'T WORK??? - COME BACK TO LATER 
+make_moveviz <- function(movement){
+  
+  # finally, merge the tracks back togehter into a stack...
+  m <- moveStack(movement.split)
+  
+  # create spatial frames 
+  frames <- frames_spatial(m, path_colours = 'red',
+                           map_service = "mapbox", map_type = "comic", 
+                           map_token = 'pk.eyJ1IjoiaGFubmFoa2VyIiwiYSI6ImNpdHEzcndkajAwYmwyeW1zd2UxdTAwMnMifQ.hYglJOOC0Mhq7xNYOxc6qg',
+                           alpha = 1) %>% 
+    add_timestamps(m, type = "label")
+  
+  return(frames[[45]]) # preview one of the frames, e.g. the 100th frame
+  
+  # animate frames
+  # animate_frames(frames, out_file = "moveVis_5.gif")
+  
+}
+# make_moveviz(dec4)
+
+# ---------------------------------------
+# MAKE 3D scatterplot 
+# ---------------------------------------
+
+test <- list[[1]]
+
+# not working ...
+p <- plot_ly()
+for(element in list){
+  p %<>% plot_ly(element, x=element$Y_coord, y = ~element$X_coord, z = ~element$TimeConverted,
+                 marker = list(color = ~element$HeartRateBpm, colorscale = c('#FFE1A1', '#683531'), showscale = TRUE)) %>%
+    add_markers()
+  
+}
+
+
+
+p <- plot_ly(test, x = test$Y_coord, y = ~test$X_coord, z = ~test$TimeConverted,
+             marker = list(color = ~test$HeartRateBpm, colorscale = c('#FFE1A1', '#683531'), showscale = TRUE)) %>%
+  add_markers() %>%
+  layout(scene = list(xaxis = list(title = 'Weight'),
+                      yaxis = list(title = 'Gross horsepower'),
+                      zaxis = list(title = '1/4 mile time')),
+         annotations = list(
+           x = 1.13,
+           y = 1.05,
+           text = 'Miles/(US) gallon',
+           xref = 'paper',
+           yref = 'paper',
+           showarrow = FALSE
+         ))
+
+
+
+p
+
+plot(test$TimeConverted)

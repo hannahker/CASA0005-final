@@ -1,0 +1,101 @@
+# Interactive Visualization
+
+Following Part IV of the methodology, we will now create an interactive visualization to represent feelings of anxiety through space in London. This visualization integrates a continuous raster layer of interpolated heart rate values, and point-based personal comments on emotional state. 
+
+The following libraries are required for this visualization: 
+
+```{r, message=FALSE}
+library(leaflet)
+library(raster)
+library(htmltools)
+library(htmlwidgets)
+```
+
+We will begin by reading in the necessary data: 
+
+```{r}
+
+# read in the heart rate raster 
+r <- raster("data/smoothed.tif")
+
+# read in the personal comments 
+combined <- read.csv('data/final_comments.csv')
+
+```
+
+Now we will set the colour palettes that we will use to visualize this data. 
+
+```{r}
+# colour palette for the raster 
+pal_rast <- colorNumeric(c("#FBEC3C", "#F76C52", "#4B056F"), values(r),
+                         na.color = "transparent")
+
+# colour palette for the markers 
+pal_markers <- colorFactor(c("#8E09DC", "#FBF3A9"), combined$Sentiment)
+```
+
+We will also use some basic HTML to customize the formatting for the labels and popups on our map. 
+
+```{r}
+# formatting for the marker popups 
+popup_lab <- paste0('<b>Direction of impact on anxiety: </b>', combined$Sentiment, '<br><b>Theme:</b> ', combined$Theme, '<br><b>Note:</b> <i>', combined$ï..Note, '</i>')
+  
+# formatting for the map title 
+map_title <- HTML("Anxiety Levels in London<br>Dec 4-14, 2019")
+  
+# formatting for the legend title 
+legend_title <- HTML("Personal Comments<br>(Impact on anxiety)")
+```
+
+Now we will use the Leaflet package to create our interactive map. 
+
+```{r}
+
+leaflet() %>% 
+  # add basemap tiles
+  addProviderTiles(providers$Esri.WorldImagery,
+                   options = providerTileOptions(opacity = 0.9)) %>%
+  # add the anxiety raster
+  addRasterImage(r, 
+                 colors = pal_rast, 
+                 opacity = 0.9, 
+                 group = 'Heart Rate') %>%
+  
+  # add points for the personal comments 
+  addCircleMarkers(data=combined,
+                   radius=4,
+                   lng = ~combined$X_coord, 
+                   lat = ~combined$Y_coord, 
+                   group = 'Personal Comments',
+                   stroke = TRUE, 
+                   fillOpacity = 1, 
+                   popup=popup_lab, 
+                   color = ~pal_markers(combined$Sentiment)) %>%
+  
+  # Layers control
+  addLayersControl(
+    overlayGroups = c("Personal Comments", "Heart Rate"),
+    options = layersControlOptions(collapsed = TRUE)
+  ) %>%
+  
+  # add legend for the raster values 
+  addLegend(pal = pal_rast, 
+            values = values(r),
+            title = "Heart Rate", 
+            opacity = 1, 
+            group = 'Heart Rate') %>%
+  
+  # add legend for the personal comments 
+  addLegend(pal = pal_markers, 
+            values = combined$Sentiment,
+            title = legend_title, 
+            opacity = 1,
+            group = 'Personal Comments') %>%
+  
+  # add scale bar to the map 
+  addScaleBar(position = "bottomright") %>%
+  
+  # add title to the map 
+  addControl(map_title, position = "bottomleft")
+```
+
